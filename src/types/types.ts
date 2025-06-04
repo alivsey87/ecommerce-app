@@ -12,3 +12,9 @@ export interface Product {
 }
 
 export type Category = string;
+
+export interface Cart {
+    id: number;
+    userId: number;
+    products: Product[];
+}

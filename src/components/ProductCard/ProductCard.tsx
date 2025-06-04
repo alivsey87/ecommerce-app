@@ -1,6 +1,8 @@
 import type { Product } from "../../types/types";
 import "./ProductCard.css";
 import { Rating } from "@smastrom/react-rating";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../features/cart/cartSlice";
 
 const StarDrawing = (
   <path
@@ -25,19 +27,24 @@ const customStyles = {
 };
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
+  const dispatch = useDispatch();
   return (
     <div className="product-card">
       <h3>{product.title}</h3>
       <h5>{product.category}</h5>
       <p>${product.price}</p>
       <img className="product-image" src={product.image} alt={product.title} />
+
+      <p>{product.description}</p>
       <Rating
         style={{ maxWidth: 150 }}
         value={product.rating.rate}
         itemStyles={customStyles}
         readOnly
       />
-      <p>{product.description}</p>
+      <button className="btn-main" onClick={() => dispatch(addToCart(product))}>
+        Add to Cart
+      </button>
     </div>
   );
 };

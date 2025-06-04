@@ -2,12 +2,22 @@ import type { Category, Product } from "../../types/types";
 import { useEffect } from "react";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import "./Home.css";
-import { useProductContext } from "../../context/ProductContext";
+import { useSelector, useDispatch } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts, fetchCategories } from "../../api/api";
+import {
+  setProducts,
+  setSelectedCategory,
+} from "../../features/products/productSlice";
+import type { RootState, AppDispatch } from "../../app/store";
 
 const Home: React.FC = () => {
-  const { products, selectedCategory, dispatch } = useProductContext();
+  const dispatch = useDispatch<AppDispatch>();
+  const products = useSelector((state: RootState) => state.products.products);
+  const selectedCategory = useSelector(
+    (state: RootState) => state.products.selectedCategory
+  );
+  const cartItems = useSelector((state: RootState) => state.cart.items);
 
   const { data: productsData } = useQuery({
     queryKey: ["products"],
@@ -21,16 +31,15 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (productsData) {
-      dispatch({ type: "SET_PRODUCTS", payload: productsData.data });
+      dispatch(setProducts(productsData));
     }
   }, [productsData, dispatch]);
 
   const getFilteredProducts = () => {
     if (selectedCategory) {
-      const filteredByCategory = products.filter(
+      return products.filter(
         (product: Product) => product.category === selectedCategory
       );
-      return filteredByCategory;
     }
     return products;
   };
@@ -41,21 +50,14 @@ const Home: React.FC = () => {
     <>
       <div className="bg-color">
         <div className="cat-controls">
-          <label htmlFor="category-select">
-            Filter by category
-          </label>
+          <label htmlFor="category-select">Filter by category</label>
           <select
             id="category-select"
-            onChange={(e) =>
-              dispatch({
-                type: "SET_SELECTED_CATEGORY",
-                payload: e.target.value,
-              })
-            }
+            onChange={(e) => dispatch(setSelectedCategory(e.target.value))}
             value={selectedCategory}
           >
             <option value="">All Categories</option>
-            {categories?.data.map((category: Category) => (
+            {categories?.map((category: Category) => (
               <option value={category} key={category}>
                 {category}
               </option>
@@ -63,12 +65,11 @@ const Home: React.FC = () => {
           </select>
           <button
             className="btn-main"
-            onClick={() =>
-              dispatch({ type: "SET_SELECTED_CATEGORY", payload: "" })
-            }
+            onClick={() => dispatch(setSelectedCategory(""))}
           >
             Clear Filter
           </button>
+          <div className="cart-status">Cart Items: {cartItems.length}</div>
         </div>
 
         <div className="container">
