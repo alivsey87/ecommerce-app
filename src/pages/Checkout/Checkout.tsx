@@ -22,7 +22,7 @@ const Checkout: React.FC = () => {
       sessionStorage.removeItem("cart");
       setShowModal(false);
       navigate("/");
-    }, 2000); // Show modal for 2 seconds
+    }, 2500);
   };
 
   // Calculate total using quantity
@@ -53,8 +53,7 @@ const Checkout: React.FC = () => {
                     </div>
                     <div className="checkout-quantity-controls">
                       <button
-                        className="btn-main"
-                        style={{ padding: "0.3rem 0.8rem", minWidth: "unset" }}
+                        className="btn-main checkout-qty-btn"
                         onClick={() =>
                           dispatch(
                             updateQuantity({
@@ -67,10 +66,11 @@ const Checkout: React.FC = () => {
                       >
                         -
                       </button>
-                      <span style={{ margin: "0 10px" }}>{item.quantity}</span>
+                      <span className="checkout-qty-value">
+                        {item.quantity}
+                      </span>
                       <button
-                        className="btn-main"
-                        style={{ padding: "0.3rem 0.8rem", minWidth: "unset" }}
+                        className="btn-main checkout-qty-btn"
                         onClick={() =>
                           dispatch(
                             updateQuantity({
@@ -83,14 +83,7 @@ const Checkout: React.FC = () => {
                         +
                       </button>
                       <button
-                        className="btn-main"
-                        style={{
-                          marginLeft: "1rem",
-                          background: "#e74c3c",
-                          color: "#fff",
-                          padding: "0.3rem 0.8rem",
-                          minWidth: "unset",
-                        }}
+                        className="btn-main checkout-remove-btn"
                         onClick={() =>
                           dispatch(removeFromCart(item.product.id))
                         }
@@ -105,17 +98,14 @@ const Checkout: React.FC = () => {
           )}
         </div>
         <div className="checkout-summary">
-          <div style={{ fontWeight: "bold", margin: "1rem 0" }}>
-            Total: ${total.toFixed(2)}
-          </div>
+          <div className="checkout-total">Total: ${total.toFixed(2)}</div>
           {cartItems.length > 0 && (
             <button className="btn-main" onClick={handlePurchase}>
               Purchase
             </button>
           )}
           <button
-            className="btn-main"
-            style={{ marginTop: "1rem" }}
+            className="btn-main checkout-back-btn"
             onClick={() => navigate("/")}
           >
             Back to Home
@@ -125,7 +115,7 @@ const Checkout: React.FC = () => {
       {showModal && (
         <div className="cart-modal-overlay">
           <div className="cart-modal">
-            <h2>Thank you for your purchase!</h2>
+            <h2>Thank you for your fake purchase!</h2>
             <p>Redirecting to home...</p>
           </div>
         </div>

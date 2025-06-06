@@ -8,9 +8,19 @@
     margin: 30px;
     width: 400px;
     border-radius: 10px;
-    box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 3px;
+    box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 1px;
     background: linear-gradient(to bottom, rgba(255, 255, 255) 50%, rgba(255, 255, 255, 0.3));
     gap: 5px;
+    transition: all 200ms;
+}
+
+.product-card h5 {
+    color: #235390;
+}
+
+.product-card:hover {
+    box-shadow: rgba(0, 0, 0, 0.15) 1px 3px 3px;
+    transform: translateY(-2px)
 }
 
 .product-image {

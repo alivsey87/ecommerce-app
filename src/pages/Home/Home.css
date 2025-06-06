@@ -102,7 +102,7 @@ body {
 
 .navbar-label {
   margin-right: 0.5rem;
-  font-weight: 500;
+  display: none;
 }
 
 .navbar-select {
@@ -131,6 +131,56 @@ body {
 .navbar-right {
   display: flex;
   align-items: center;
+}
+
+/* Hide dropdown by default, show on small screens */
+.navbar-dropdown {
+  display: none;
+  position: relative;
+}
+
+.navbar-dropdown .navbar-btn {
+  margin-top: 20px;
+}
+
+.navbar-dropdown-toggle {
+  background: #235390;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.navbar-dropdown-menu {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 2.5rem;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(79, 140, 255, 0.08);
+  padding: 1rem;
+  z-index: 100;
+  min-width: 180px;
+}
+
+.navbar-dropdown:focus-within .navbar-dropdown-menu,
+.navbar-dropdown:hover .navbar-dropdown-menu {
+  display: block;
+}
+
+/* Responsive: Hide filters, show dropdown on small screens */
+@media (max-width: 600px) {
+  .navbar-left {
+    display: none;
+  }
+
+  .navbar-dropdown {
+    display: block;
+  }
 }
 
 .cart-icon-wrapper {
@@ -177,6 +227,10 @@ body {
   overflow-y: auto;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
   position: relative;
+}
+
+.cart-modal h4 {
+  color: #235390;
 }
 
 .cart-modal-close {

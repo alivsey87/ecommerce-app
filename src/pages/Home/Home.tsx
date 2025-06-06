@@ -91,6 +91,33 @@ const Home: React.FC = () => {
               Clear Filter
             </button>
           </div>
+          <div className="navbar-dropdown">
+            <button className="navbar-dropdown-toggle" tabIndex={0}>
+              ☰
+            </button>
+            <div className="navbar-dropdown-menu">
+              <select
+                id="category-select-mobile"
+                className="navbar-select"
+                aria-label="Filter by category (mobile)"
+                onChange={(e) => dispatch(setSelectedCategory(e.target.value))}
+                value={selectedCategory}
+              >
+                <option value="">All Categories</option>
+                {categories?.map((category: Category) => (
+                  <option value={category} key={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+              <button
+                className="btn-main navbar-btn"
+                onClick={() => dispatch(setSelectedCategory(""))}
+              >
+                Clear Filter
+              </button>
+            </div>
+          </div>
           <div className="navbar-right">
             <div
               className="cart-icon-wrapper"
@@ -126,7 +153,7 @@ const Home: React.FC = () => {
               </button>
               <h2>Your Cart</h2>
               {cartItems.length === 0 ? (
-                <p>Your cart is empty.</p>
+                <h4>Your cart is empty.</h4>
               ) : (
                 <>
                   <ul>
