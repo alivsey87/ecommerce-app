@@ -116,6 +116,7 @@ const Checkout: React.FC = () => {
         <div className="cart-modal-overlay">
           <div className="cart-modal">
             <h2>Thank you for your fake purchase!</h2>
+            <br />
             <p>Redirecting to home...</p>
           </div>
         </div>

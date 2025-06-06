@@ -136,7 +136,6 @@ const Home: React.FC = () => {
             </div>
           </div>
         </nav>
-
         {/* Cart Modal */}
         {showCartModal && (
           <div
@@ -151,115 +150,105 @@ const Home: React.FC = () => {
               >
                 ×
               </button>
-              <h2>Your Cart</h2>
+              <h2 className="cart-modal-header">Your Cart</h2>
               {cartItems.length === 0 ? (
-                <h4>Your cart is empty.</h4>
+                <h4 className="cart-modal-empty">Your cart is empty.</h4>
               ) : (
                 <>
-                  <ul>
+                  <ul className="cart-modal-list">
                     {cartItems.map((item, idx) => (
                       <li
                         key={item.product.id || idx}
-                        style={{ marginBottom: "1rem" }}
+                        className="cart-modal-item"
                       >
-                        <img
-                          src={item.product.image}
-                          alt={item.product.title}
-                          style={{
-                            width: "50px",
-                            height: "50px",
-                            objectFit: "contain",
-                            borderRadius: "6px",
-                            border: "1px solid #eee",
-                            background: "#fafbfc",
-                          }}
-                        />
-                        <br />
-                        <p>{item.product.title}</p>
-                        <div style={{ marginTop: "0.5rem" }}>
-                          <button
-                            className="btn-main"
-                            style={{
-                              padding: "0.3rem 0.8rem",
-                              minWidth: "unset",
-                            }}
-                            onClick={() =>
-                              dispatch(
-                                updateQuantity({
-                                  id: item.product.id,
-                                  quantity: item.quantity - 1,
-                                })
-                              )
-                            }
-                            disabled={item.quantity <= 1}
-                          >
-                            -
-                          </button>
-                          <span style={{ margin: "0 10px" }}>
-                            {item.quantity}
-                          </span>
-                          <button
-                            className="btn-main"
-                            style={{
-                              padding: "0.3rem 0.8rem",
-                              minWidth: "unset",
-                            }}
-                            onClick={() =>
-                              dispatch(
-                                updateQuantity({
-                                  id: item.product.id,
-                                  quantity: item.quantity + 1,
-                                })
-                              )
-                            }
-                          >
-                            +
-                          </button>
-                          <button
-                            className="btn-main"
-                            style={{
-                              marginLeft: "1rem",
-                              background: "#e74c3c",
-                              color: "#fff",
-                              padding: "0.3rem 0.8rem",
-                              minWidth: "unset",
-                            }}
-                            onClick={() =>
-                              dispatch(removeFromCart(item.product.id))
-                            }
-                          >
-                            Remove
-                          </button>
+                        <div className="cart-modal-img-col">
+                          <img
+                            src={item.product.image}
+                            alt={item.product.title}
+                            className="cart-modal-img"
+                          />
+                        </div>
+                        <div className="cart-modal-details-col">
+                          <p className="cart-modal-title">
+                            {item.product.title}
+                          </p>
+                          <div className="cart-modal-price">
+                            $
+                            {(
+                              Number(item.product.price) * item.quantity
+                            ).toFixed(2)}
+                          </div>
+                          <div className="cart-modal-controls-row">
+                            <button
+                              className="btn-main cart-modal-qty-btn"
+                              onClick={() =>
+                                dispatch(
+                                  updateQuantity({
+                                    id: item.product.id,
+                                    quantity: item.quantity - 1,
+                                  })
+                                )
+                              }
+                              disabled={item.quantity <= 1}
+                            >
+                              -
+                            </button>
+                            <span className="cart-modal-qty-value">
+                              {item.quantity}
+                            </span>
+                            <button
+                              className="btn-main cart-modal-qty-btn"
+                              onClick={() =>
+                                dispatch(
+                                  updateQuantity({
+                                    id: item.product.id,
+                                    quantity: item.quantity + 1,
+                                  })
+                                )
+                              }
+                            >
+                              +
+                            </button>
+                            <button
+                              className="btn-main cart-modal-remove-btn"
+                              onClick={() =>
+                                dispatch(removeFromCart(item.product.id))
+                              }
+                            >
+                              Remove
+                            </button>
+                          </div>
                         </div>
                       </li>
                     ))}
                   </ul>
-                  {/* Total Price */}
-                  <div style={{ fontWeight: "bold", margin: "2rem 0" }}>
-                    Total: ${cartTotal.toFixed(2)}
+                  <div className="cart-modal-footer">
+                    <div className="cart-modal-total">
+                      Total: ${cartTotal.toFixed(2)}
+                    </div>
+                    <div className="cart-modal-actions">
+                      <button
+                        className="btn-main cart-modal-clear-btn"
+                        onClick={() => dispatch(clearCart())}
+                      >
+                        Clear Cart
+                      </button>
+                      <button
+                        className="btn-main cart-modal-checkout-btn"
+                        onClick={() => {
+                          setShowCartModal(false);
+                          navigate("/checkout");
+                        }}
+                      >
+                        Checkout
+                      </button>
+                    </div>
                   </div>
-                  <button
-                    className="btn-main"
-                    style={{ marginRight: "1rem" }}
-                    onClick={() => dispatch(clearCart())}
-                  >
-                    Clear Cart
-                  </button>
-                  <button
-                    className="btn-main"
-                    onClick={() => {
-                      setShowCartModal(false);
-                      navigate("/checkout");
-                    }}
-                  >
-                    Checkout
-                  </button>
                 </>
               )}
             </div>
           </div>
         )}
-
         <div className="container">
           {filteredProducts.map((product: Product) => (
             <ProductCard product={product} key={product.id} />
