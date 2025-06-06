@@ -1,6 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { clearCart } from "../../features/cart/cartSlice";
+import {
+  clearCart,
+  updateQuantity,
+  removeFromCart,
+} from "../../features/cart/cartSlice";
 import type { RootState, AppDispatch } from "../../app/store";
 import { useState } from "react";
 import "./Checkout.css";
@@ -21,7 +25,11 @@ const Checkout: React.FC = () => {
     }, 2000); // Show modal for 2 seconds
   };
 
-  const total = cartItems.reduce((sum, item) => sum + Number(item.price), 0);
+  // Calculate total using quantity
+  const total = cartItems.reduce(
+    (sum, item) => sum + Number(item.product.price) * item.quantity,
+    0
+  );
 
   return (
     <div className="checkout-container">
@@ -33,15 +41,63 @@ const Checkout: React.FC = () => {
           ) : (
             <ul>
               {cartItems.map((item, idx) => (
-                <li className="checkout-product" key={item.id || idx}>
+                <li className="checkout-product" key={item.product.id || idx}>
                   <img
-                    src={item.image}
-                    alt={item.title}
+                    src={item.product.image}
+                    alt={item.product.title}
                     className="checkout-product-img"
                   />
                   <div className="checkout-product-info">
-                    <div className="checkout-product-title">{item.title}</div>
-                    <div className="checkout-product-price">${item.price}</div>
+                    <div className="checkout-product-title">
+                      {item.product.title}
+                    </div>
+                    <div className="checkout-quantity-controls">
+                      <button
+                        className="btn-main"
+                        style={{ padding: "0.3rem 0.8rem", minWidth: "unset" }}
+                        onClick={() =>
+                          dispatch(
+                            updateQuantity({
+                              id: item.product.id,
+                              quantity: item.quantity - 1,
+                            })
+                          )
+                        }
+                        disabled={item.quantity <= 1}
+                      >
+                        -
+                      </button>
+                      <span style={{ margin: "0 10px" }}>{item.quantity}</span>
+                      <button
+                        className="btn-main"
+                        style={{ padding: "0.3rem 0.8rem", minWidth: "unset" }}
+                        onClick={() =>
+                          dispatch(
+                            updateQuantity({
+                              id: item.product.id,
+                              quantity: item.quantity + 1,
+                            })
+                          )
+                        }
+                      >
+                        +
+                      </button>
+                      <button
+                        className="btn-main"
+                        style={{
+                          marginLeft: "1rem",
+                          background: "#e74c3c",
+                          color: "#fff",
+                          padding: "0.3rem 0.8rem",
+                          minWidth: "unset",
+                        }}
+                        onClick={() =>
+                          dispatch(removeFromCart(item.product.id))
+                        }
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </div>
                 </li>
               ))}

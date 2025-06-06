@@ -10,6 +10,7 @@
 .checkout-content {
   display: flex;
   align-items: flex-start;
+  margin-top: 40px;
 }
 
 .checkout-products {
@@ -27,7 +28,7 @@
 .checkout-product {
   display: flex;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
 }
 
 .checkout-product-img {

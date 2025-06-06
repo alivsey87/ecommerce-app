@@ -9,7 +9,11 @@ import {
   setProducts,
   setSelectedCategory,
 } from "../../features/products/productSlice";
-import { clearCart } from "../../features/cart/cartSlice";
+import {
+  clearCart,
+  updateQuantity,
+  removeFromCart,
+} from "../../features/cart/cartSlice";
 import type { RootState, AppDispatch } from "../../app/store";
 import { useNavigate } from "react-router-dom";
 
@@ -52,6 +56,12 @@ const Home: React.FC = () => {
   // Modal state for cart
   const [showCartModal, setShowCartModal] = useState(false);
 
+  // Calculate total using quantity
+  const cartTotal = cartItems.reduce(
+    (sum, item) => sum + Number(item.product.price) * item.quantity,
+    0
+  );
+
   return (
     <>
       <div className="bg-color">
@@ -93,7 +103,9 @@ const Home: React.FC = () => {
                   fill="#333"
                 />
               </svg>
-              <span className="cart-badge">{cartItems.length}</span>
+              <span className="cart-badge">
+                {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+              </span>
             </div>
           </div>
         </nav>
@@ -105,6 +117,13 @@ const Home: React.FC = () => {
             onClick={() => setShowCartModal(false)}
           >
             <div className="cart-modal" onClick={(e) => e.stopPropagation()}>
+              <button
+                className="cart-modal-close"
+                onClick={() => setShowCartModal(false)}
+                aria-label="Close cart"
+              >
+                ×
+              </button>
               <h2>Your Cart</h2>
               {cartItems.length === 0 ? (
                 <p>Your cart is empty.</p>
@@ -112,17 +131,85 @@ const Home: React.FC = () => {
                 <>
                   <ul>
                     {cartItems.map((item, idx) => (
-                      <li key={item.id || idx}>
-                        {item.title} - ${item.price}
+                      <li
+                        key={item.product.id || idx}
+                        style={{ marginBottom: "1rem" }}
+                      >
+                        <img
+                          src={item.product.image}
+                          alt={item.product.title}
+                          style={{
+                            width: "50px",
+                            height: "50px",
+                            objectFit: "contain",
+                            borderRadius: "6px",
+                            border: "1px solid #eee",
+                            background: "#fafbfc",
+                          }}
+                        />
+                        <br />
+                        <p>{item.product.title}</p>
+                        <div style={{ marginTop: "0.5rem" }}>
+                          <button
+                            className="btn-main"
+                            style={{
+                              padding: "0.3rem 0.8rem",
+                              minWidth: "unset",
+                            }}
+                            onClick={() =>
+                              dispatch(
+                                updateQuantity({
+                                  id: item.product.id,
+                                  quantity: item.quantity - 1,
+                                })
+                              )
+                            }
+                            disabled={item.quantity <= 1}
+                          >
+                            -
+                          </button>
+                          <span style={{ margin: "0 10px" }}>
+                            {item.quantity}
+                          </span>
+                          <button
+                            className="btn-main"
+                            style={{
+                              padding: "0.3rem 0.8rem",
+                              minWidth: "unset",
+                            }}
+                            onClick={() =>
+                              dispatch(
+                                updateQuantity({
+                                  id: item.product.id,
+                                  quantity: item.quantity + 1,
+                                })
+                              )
+                            }
+                          >
+                            +
+                          </button>
+                          <button
+                            className="btn-main"
+                            style={{
+                              marginLeft: "1rem",
+                              background: "#e74c3c",
+                              color: "#fff",
+                              padding: "0.3rem 0.8rem",
+                              minWidth: "unset",
+                            }}
+                            onClick={() =>
+                              dispatch(removeFromCart(item.product.id))
+                            }
+                          >
+                            Remove
+                          </button>
+                        </div>
                       </li>
                     ))}
                   </ul>
                   {/* Total Price */}
-                  <div style={{ fontWeight: "bold", margin: "1rem 0" }}>
-                    Total: $
-                    {cartItems
-                      .reduce((sum, item) => sum + Number(item.price), 0)
-                      .toFixed(2)}
+                  <div style={{ fontWeight: "bold", margin: "2rem 0" }}>
+                    Total: ${cartTotal.toFixed(2)}
                   </div>
                   <button
                     className="btn-main"
@@ -142,7 +229,6 @@ const Home: React.FC = () => {
                   </button>
                 </>
               )}
-              <button onClick={() => setShowCartModal(false)}>Close</button>
             </div>
           </div>
         )}
