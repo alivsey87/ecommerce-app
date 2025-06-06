@@ -22,8 +22,8 @@ const StarDrawing = (
 
 const customStyles = {
   itemShapes: StarDrawing,
-  activeFillColor: "#22C55E",
-  inactiveFillColor: "#BBF7D0",
+  activeFillColor: "#235390",
+  inactiveFillColor: "#97ceff",
 };
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
@@ -37,7 +37,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
       <p>{product.description}</p>
       <Rating
-        style={{ maxWidth: 150 }}
+        style={{ maxWidth: 150, padding: 10 }}
         value={product.rating.rate}
         itemStyles={customStyles}
         readOnly

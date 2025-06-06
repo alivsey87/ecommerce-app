@@ -6,7 +6,7 @@ interface CartState {
 }
 
 const initialState: CartState = {
-  items: [],
+  items: JSON.parse(sessionStorage.getItem("cart") || "[]"),
 };
 
 const cartSlice = createSlice({
@@ -15,9 +15,11 @@ const cartSlice = createSlice({
   reducers: {
     addToCart(state, action: PayloadAction<Product>) {
       state.items.push(action.payload);
+      sessionStorage.setItem("cart", JSON.stringify(state.items));
     },
     clearCart(state) {
       state.items = [];
+      sessionStorage.setItem("cart", JSON.stringify(state.items));
     }
   },
 });
