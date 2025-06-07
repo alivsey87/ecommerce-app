@@ -18,3 +18,8 @@ export interface Cart {
     userId: number;
     products: Product[];
 }
+
+export interface CartItem {
+  product: Product;
+  quantity: number;
+}

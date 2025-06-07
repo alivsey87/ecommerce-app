@@ -1,6 +1,7 @@
 import type { Category, Product } from "../../types/types";
 import { useEffect, useState } from "react";
 import ProductCard from "../../components/ProductCard/ProductCard";
+import CartModal from "../../components/CartModal/CartModal";
 import "./Home.css";
 import { useSelector, useDispatch } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
@@ -29,11 +30,13 @@ const Home: React.FC = () => {
   const { data: productsData } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
+    staleTime: 1000 * 60 * 60,
   });
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
+    staleTime: 1000 * 60 * 60,
   });
 
   useEffect(() => {
@@ -138,116 +141,20 @@ const Home: React.FC = () => {
         </nav>
         {/* Cart Modal */}
         {showCartModal && (
-          <div
-            className="cart-modal-overlay"
-            onClick={() => setShowCartModal(false)}
-          >
-            <div className="cart-modal" onClick={(e) => e.stopPropagation()}>
-              <button
-                className="cart-modal-close"
-                onClick={() => setShowCartModal(false)}
-                aria-label="Close cart"
-              >
-                ×
-              </button>
-              <h2 className="cart-modal-header">Your Cart</h2>
-              {cartItems.length === 0 ? (
-                <h4 className="cart-modal-empty">Your cart is empty.</h4>
-              ) : (
-                <>
-                  <ul className="cart-modal-list">
-                    {cartItems.map((item, idx) => (
-                      <li
-                        key={item.product.id || idx}
-                        className="cart-modal-item"
-                      >
-                        <div className="cart-modal-img-col">
-                          <img
-                            src={item.product.image}
-                            alt={item.product.title}
-                            className="cart-modal-img"
-                          />
-                        </div>
-                        <div className="cart-modal-details-col">
-                          <p className="cart-modal-title">
-                            {item.product.title}
-                          </p>
-                          <div className="cart-modal-price">
-                            $
-                            {(
-                              Number(item.product.price) * item.quantity
-                            ).toFixed(2)}
-                          </div>
-                          <div className="cart-modal-controls-row">
-                            <button
-                              className="btn-main cart-modal-qty-btn"
-                              onClick={() =>
-                                dispatch(
-                                  updateQuantity({
-                                    id: item.product.id,
-                                    quantity: item.quantity - 1,
-                                  })
-                                )
-                              }
-                              disabled={item.quantity <= 1}
-                            >
-                              -
-                            </button>
-                            <span className="cart-modal-qty-value">
-                              {item.quantity}
-                            </span>
-                            <button
-                              className="btn-main cart-modal-qty-btn"
-                              onClick={() =>
-                                dispatch(
-                                  updateQuantity({
-                                    id: item.product.id,
-                                    quantity: item.quantity + 1,
-                                  })
-                                )
-                              }
-                            >
-                              +
-                            </button>
-                            <button
-                              className="btn-main cart-modal-remove-btn"
-                              onClick={() =>
-                                dispatch(removeFromCart(item.product.id))
-                              }
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="cart-modal-footer">
-                    <div className="cart-modal-total">
-                      Total: ${cartTotal.toFixed(2)}
-                    </div>
-                    <div className="cart-modal-actions">
-                      <button
-                        className="btn-main cart-modal-clear-btn"
-                        onClick={() => dispatch(clearCart())}
-                      >
-                        Clear Cart
-                      </button>
-                      <button
-                        className="btn-main cart-modal-checkout-btn"
-                        onClick={() => {
-                          setShowCartModal(false);
-                          navigate("/checkout");
-                        }}
-                      >
-                        Checkout
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
+          <CartModal
+            cartItems={cartItems}
+            cartTotal={cartTotal}
+            onClose={() => setShowCartModal(false)}
+            onUpdateQuantity={(id, quantity) =>
+              dispatch(updateQuantity({ id, quantity }))
+            }
+            onRemoveFromCart={(id) => dispatch(removeFromCart(id))}
+            onClearCart={() => dispatch(clearCart())}
+            onCheckout={() => {
+              setShowCartModal(false);
+              navigate("/checkout");
+            }}
+          />
         )}
         <div className="container">
           {filteredProducts.map((product: Product) => (
