@@ -1,5 +1,5 @@
 import type { Product } from "../../types/types";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import CartModal from "../../components/CartModal/CartModal";
 import Navbar from "../../components/Navbar/Navbar";
@@ -46,23 +46,25 @@ const Home: React.FC = () => {
     }
   }, [productsData, dispatch]);
 
-  const getFilteredProducts = () => {
+  const filteredProducts = useMemo(() => {
     if (selectedCategory) {
       return products.filter(
         (product: Product) => product.category === selectedCategory
       );
     }
     return products;
-  };
+  }, [products, selectedCategory]);
 
-  const filteredProducts = getFilteredProducts();
+  const cartTotal = useMemo(
+    () =>
+      cartItems.reduce(
+        (sum, item) => sum + Number(item.product.price) * item.quantity,
+        0
+      ),
+    [cartItems]
+  );
 
   const [showCartModal, setShowCartModal] = useState(false);
-
-  const cartTotal = cartItems.reduce(
-    (sum, item) => sum + Number(item.product.price) * item.quantity,
-    0
-  );
 
   return (
     <>
