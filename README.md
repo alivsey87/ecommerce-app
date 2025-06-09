@@ -1,54 +1,105 @@
-# React + TypeScript + Vite
+# Advanced React E-Commerce Web App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+## Table of Contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. [Project Setup](#project-setup)
 
-## Expanding the ESLint configuration
+2. [App Usage](#app-usage)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+3. [Project Structure](#project-structure)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+    - [Components](#component-auth0)
+    - [Context](#context-task-context)
+    - [Pages](#page-home)
+    - [Types](#types)
+
+### Project Setup
+
+---
+
+Clone repo and navigate to project:
+
+```sh
+git clone https://github.com/alivsey87/ecommerce-app.git
+cd task-app
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Install all dependencies needed for this project (React, React DOM, React Router, Redux/Redux Toolkit, React Query and Smastrom React Rating Bootstrap and Axios):
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```sh
+npm install
 ```
+
+Run app:
+
+```sh
+npm run dev
+```
+
+---
+---
+
+### App Usage
+
+---
+
+App has a landing Home page asking user to Login. With the help of Auth0, user can login via Google or GitHub. User is directed to a dashboard that allows them to create tasks, remove tasks, edit each task and filter the tasks based on completion. User can also log out and be redirected back to the home page.
+
+---
+---
+
+### Project Structure
+
+---
+
+I grouped the files by Components, Context, Pages and Types except for the App.tsx and main.tsx files. The context props are defined in App and passed to the context provider wrapping all the Routes. App is wrapped by the Auth0 Provider and everything wrapped by the Browser Router.
+
+#### Component: Auth0
+
+The first component `Auth0Provider.tsx` is where the Auth0 is configured to navigate the user after authentication. This wraps the entire app so that the authentication state is available to all components. The `AuthenticationGuard.tsx` uses the now available Auth0 context to protect whatever component/page (in my case, `Dashboard.tsx`) is trying to be accessed. If the user is authenticated, the page renders, if not, the user is redirected.
+
+#### Component: Login
+
+The `LoginButton.tsx` uses the Auth0 context to provide a way for the user to be authenticated and directed to the Dashboard upon successful authentication.
+
+#### Component: Logout
+
+Similarly, the `LogoutButton.tsx` uses the Auth0 context in directing the user back to the home page and changing to no longer being authenticated.
+
+#### Component: Task Filter
+
+The `TaskFilter.tsx` component contains the `filter` and `setFilter` props passed that filter the task list based on if they are completed or not. This component renders the buttons that render on the Dashboard that provide the user with the filter options.
+
+#### Component: Task List
+
+The `TaskList.tsx` component is what renders the actual list of tasks on the Dashboard. The component is passed the array of tasks, filter, updateTask and onTaskClick as props. Each task renders a checkbox that is handled by updateTask and the task itself is a button that is handled by onTaskClick to enable the user to check the details of the task and edit.
+
+---
+
+#### Context: Task Context
+
+The global state for the tasks which is passed the TaskList type, addTask, deleteTask, clearTasks, updateTask functions as props.
+
+---
+
+#### Page: Home
+
+The landing and "/" page welcoming the user and providing a Login/Logout button depending on if the user is authenticated or not.
+
+#### Page: Dashboard
+
+The `Dashboard.tsx` is the main component/page of the whole app. Once the user is authenticated, their dashboard is rendered with options to create/remove tasks and to filter the list of tasks. Many state variables are used here along with the Task context and Auth0 context. I employ 3 different modals here to display task details (`TaskDetailsModal.tsx`) and provide forms to create (`CreateTaskModal.tsx`) a task and edit (`EditTaskModal.tsx`) tasks.
+
+#### Page: Callback
+
+The redirect page if there is an error in authenticating user.
+
+---
+
+#### Types
+
+The `tasks.ts` contains just two types: Task, which contains the id number, title string, optional description string and completed boolean, and the TaskList, which contains an array of Tasks, which is used to create the main Task Context.
+
+[back to top](#knowledge-check-task-management-app-with-typescript)

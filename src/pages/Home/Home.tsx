@@ -40,12 +40,6 @@ const Home: React.FC = () => {
     staleTime: 1000 * 60 * 60,
   });
 
-  useEffect(() => {
-    if (productsData) {
-      dispatch(setProducts(productsData));
-    }
-  }, [productsData, dispatch]);
-
   const filteredProducts = useMemo(() => {
     if (selectedCategory) {
       return products.filter(
@@ -65,6 +59,12 @@ const Home: React.FC = () => {
   );
 
   const [showCartModal, setShowCartModal] = useState(false);
+
+  useEffect(() => {
+    if (productsData) {
+      dispatch(setProducts(productsData));
+    }
+  }, [productsData, dispatch]);
 
   return (
     <>
