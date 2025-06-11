@@ -1,7 +1,8 @@
 import type { Product } from "../../types/types";
 import { useEffect, useMemo, useState } from "react";
 import ProductCard from "../../components/ProductCard/ProductCard";
-import CartModal from "../../components/CartModal/CartModal";
+import Modal from "../../components/Modal/Modal";
+import CartModalContent from "../../features/cart/CartModalContent";
 import Navbar from "../../components/Navbar/Navbar";
 import "./Home.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -80,22 +81,23 @@ const Home: React.FC = () => {
           onCartClick={() => setShowCartModal(true)}
         />
 
-        {showCartModal && (
-          <CartModal
-            cartItems={cartItems}
-            cartTotal={cartTotal}
-            onClose={() => setShowCartModal(false)}
-            onUpdateQuantity={(id, quantity) =>
-              dispatch(updateQuantity({ id, quantity }))
-            }
-            onRemoveFromCart={(id) => dispatch(removeFromCart(id))}
-            onClearCart={() => dispatch(clearCart())}
-            onCheckout={() => {
-              setShowCartModal(false);
-              navigate("/checkout");
-            }}
-          />
-        )}
+          <Modal isOpen={showCartModal} onClose={() => setShowCartModal(false)}>
+            <CartModalContent
+              cartItems={cartItems}
+              cartTotal={cartTotal}
+              onClose={() => setShowCartModal(false)}
+              onUpdateQuantity={(id, quantity) =>
+                dispatch(updateQuantity({ id, quantity }))
+              }
+              onRemoveFromCart={(id) => dispatch(removeFromCart(id))}
+              onClearCart={() => dispatch(clearCart())}
+              onCheckout={() => {
+                setShowCartModal(false);
+                navigate("/checkout");
+              }}
+            />
+          </Modal>
+  
         <div className="container">
           {filteredProducts.map((product: Product) => (
             <ProductCard product={product} key={product.id} />

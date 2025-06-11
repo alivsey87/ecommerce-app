@@ -100,7 +100,7 @@ body {
   pointer-events: none;
 }
 
-.cart-modal-overlay {
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -115,7 +115,7 @@ body {
   justify-content: center;
 }
 
-.cart-modal {
+.modal-content {
   position: relative;
   background: linear-gradient(to right, rgba(255, 255, 255), rgba(255, 255, 255, 0.6));
   padding: 2rem 2.5rem;
@@ -130,7 +130,7 @@ body {
   align-items: flex-start;
 }
 
-.cart-modal-close {
+.modal-close {
   position: absolute;
   top: 1rem;
   right: 1rem;
