@@ -17,7 +17,7 @@ const Home: React.FC = () => {
         <LoginForm />
       </Modal>
       <Modal isOpen={showRegister} onClose={() => setShowRegister(false)}>
-        <RegistrationForm />
+        <RegistrationForm onClose={() => setShowRegister(false)} />
       </Modal>
     </>
   );

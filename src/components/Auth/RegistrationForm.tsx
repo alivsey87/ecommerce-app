@@ -3,9 +3,13 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../firebase/firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 
-const RegistrationForm = () => {
+type RegistrationFormProps = {
+  onClose: () => void;
+};
+
+const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
   const [name, setName] = useState<string>("");
-  const [age, setAge] = useState<number | string>('');
+  const [age, setAge] = useState<number | string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -21,6 +25,11 @@ const RegistrationForm = () => {
       const userData = { id: userCredential.user.uid, name, age, email };
       await addDoc(collection(db, "users"), userData);
       alert("Registration successful!");
+      setName("");
+      setAge("");
+      setEmail("");
+      setPassword("");
+      onClose();
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -40,7 +49,7 @@ const RegistrationForm = () => {
       />
       <input
         type="text"
-        placeholder='Age'
+        placeholder="Age"
         value={age}
         onChange={(e) => setAge(Number(e.target.value))}
       />
