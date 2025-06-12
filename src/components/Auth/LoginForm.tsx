@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../../firebase/firebaseConfig";
 
-const Login = () => {
+const LoginForm = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -52,4 +52,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginForm;

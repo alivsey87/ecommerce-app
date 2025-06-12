@@ -3,9 +3,9 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../firebase/firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 
-const Register = () => {
+const RegistrationForm = () => {
   const [name, setName] = useState<string>("");
-  const [age, setAge] = useState<number>(0);
+  const [age, setAge] = useState<number | string>('');
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +40,7 @@ const Register = () => {
       />
       <input
         type="text"
-        placeholder="Age"
+        placeholder='Age'
         value={age}
         onChange={(e) => setAge(Number(e.target.value))}
       />
@@ -62,4 +62,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegistrationForm;
