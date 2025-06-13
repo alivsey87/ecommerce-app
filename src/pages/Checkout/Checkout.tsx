@@ -7,6 +7,7 @@ import {
 } from "../../features/cart/cartSlice";
 import type { RootState, AppDispatch } from "../../app/store";
 import { useState } from "react";
+import Modal from "../../components/Modal/Modal";
 import "./Checkout.css";
 
 const Checkout: React.FC = () => {
@@ -112,7 +113,7 @@ const Checkout: React.FC = () => {
           </button>
         </div>
       </div>
-      {showModal && (
+      <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
         <div className="cart-modal-overlay">
           <div className="cart-modal">
             <h2>Thank you for your fake purchase!</h2>
@@ -120,7 +121,7 @@ const Checkout: React.FC = () => {
             <p>Redirecting to home...</p>
           </div>
         </div>
-      )}
+      </Modal>
     </div>
   );
 };

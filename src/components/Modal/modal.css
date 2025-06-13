@@ -30,11 +30,13 @@
 
 .modal-close {
   position: absolute;
-  top: 1rem;
+  top: 0.4rem;
   right: 1rem;
   background: transparent;
   border: none;
-  font-size: 2rem;
+  font-size: 1.5rem;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: bold;
   color: #235390;
   cursor: pointer;
   z-index: 2;

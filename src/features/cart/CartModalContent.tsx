@@ -1,4 +1,5 @@
 import type { CartItem } from "../../types/types";
+import './cart.css';
 
 interface CartModalProps {
   cartItems: CartItem[];
