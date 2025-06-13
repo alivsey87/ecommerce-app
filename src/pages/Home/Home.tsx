@@ -1,24 +1,82 @@
-import Modal from "../../components/Modal/Modal";
-import LoginForm from "../../components/Auth/LoginForm";
-import RegistrationForm from "../../components/Auth/RegistrationForm";
-import { useState } from "react";
+import type { Product } from "../../types/types";
+import { useEffect, useMemo } from "react";
+import ProductCard from "../../components/ProductCard/ProductCard";
+import "./Home.css";
+import { useSelector, useDispatch } from "react-redux";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProducts, fetchCategories } from "../../api/api";
+import {
+  setProducts,
+  setSelectedCategory,
+} from "../../features/products/productSlice";
+import type { RootState, AppDispatch } from "../../app/store";
 
 const Home: React.FC = () => {
-  const [showLogin, setShowLogin] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const products = useSelector((state: RootState) => state.products.products);
+  const selectedCategory = useSelector(
+    (state: RootState) => state.products.selectedCategory
+  );
+ 
+
+  const { data: productsData } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+    staleTime: 1000 * 60 * 60,
+  });
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+    staleTime: 1000 * 60 * 60,
+  });
+
+  const filteredProducts = useMemo(() => {
+    if (selectedCategory) {
+      return products.filter(
+        (product: Product) => product.category === selectedCategory
+      );
+    }
+    return products;
+  }, [products, selectedCategory]);
+
+
+ 
+
+  useEffect(() => {
+    if (productsData) {
+      dispatch(setProducts(productsData));
+    }
+  }, [productsData, dispatch]);
+
   return (
     <>
-      <h1>Welcome to our store!</h1>
-      <h3>Please login</h3>
-      <button onClick={() => setShowLogin(true)}>Login</button>
-      <h3>Don't have an account? Register below</h3>
-      <button onClick={() => setShowRegister(true)}>Register</button>
-      <Modal isOpen={showLogin} onClose={() => setShowLogin(false)}>
-        <LoginForm />
-      </Modal>
-      <Modal isOpen={showRegister} onClose={() => setShowRegister(false)}>
-        <RegistrationForm onClose={() => setShowRegister(false)} />
-      </Modal>
+      <div className="bg-color">
+        <div className="navbar-left">
+          <label htmlFor="category-select" className="navbar-label">
+            Filter by category
+          </label>
+          <select
+            id="category-select"
+            className="navbar-select"
+            onChange={(e) => dispatch(setSelectedCategory(e.target.value))}
+            value={selectedCategory}
+          >
+            <option value="">All</option>
+            {categories?.map((category) => (
+              <option value={category} key={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="container">
+          {filteredProducts.map((product: Product) => (
+            <ProductCard product={product} key={product.id} />
+          ))}
+        </div>
+      </div>
     </>
   );
 };

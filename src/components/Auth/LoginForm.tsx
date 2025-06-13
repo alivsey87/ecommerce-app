@@ -1,31 +1,32 @@
-import { useState, type FormEvent } from "react";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase/firebaseConfig";
+import { useAuth } from "./AuthContext";
 
-const LoginForm = () => {
+type LoginFormProps = {
+  onClose: () => void;
+};
+
+const LoginForm = ({ onClose }: LoginFormProps) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const { setUser } = useAuth();
 
-  const handleLogin = async (e: FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      setUser(userCredential.user);
       alert("Login successful!");
+      onClose();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Unknown error occurred.");
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      alert("Logged out!");
-    } catch (err: unknown) {
-      console.error(
-        "Logout error:",
-        err instanceof Error ? err.message : "unknown"
-      );
     }
   };
 
@@ -47,7 +48,6 @@ const LoginForm = () => {
         <button type="submit">Login</button>
         {error && <p>{error}</p>}
       </form>
-      <button onClick={handleLogout}>Logout</button>
     </>
   );
 };

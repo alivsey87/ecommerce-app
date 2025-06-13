@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../firebase/firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
@@ -9,12 +9,12 @@ type RegistrationFormProps = {
 
 const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
   const [name, setName] = useState<string>("");
-  const [age, setAge] = useState<number | string>("");
+  const [dispName, setDispName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
-  const handleRegister = async (e: FormEvent) => {
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -22,11 +22,11 @@ const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
         email,
         password
       );
-      const userData = { id: userCredential.user.uid, name, age, email };
+      const userData = { id: userCredential.user.uid, dispName, name, email };
       await addDoc(collection(db, "users"), userData);
-      alert("Registration successful!");
+      alert("Registration successful!\n Please login");
+      setDispName('');
       setName("");
-      setAge("");
       setEmail("");
       setPassword("");
       onClose();
@@ -43,15 +43,15 @@ const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
     <form onSubmit={handleRegister}>
       <input
         type="text"
-        placeholder="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
+        placeholder="Display Name"
+        value={dispName}
+        onChange={(e) => setDispName(e.target.value)}
       />
       <input
         type="text"
-        placeholder="Age"
-        value={age}
-        onChange={(e) => setAge(Number(e.target.value))}
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
       />
       <input
         type="email"
