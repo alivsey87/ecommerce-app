@@ -19,7 +19,6 @@ const Checkout: React.FC = () => {
     setShowModal(true);
     setTimeout(() => {
       dispatch(clearCart());
-      sessionStorage.removeItem("cart");
       setShowModal(false);
       navigate("/");
     }, 2500);
