@@ -2,13 +2,23 @@ import React, { useState } from "react";
 import "./navbar.css";
 import CartIcon from "../Icons/CartIcon";
 import { Link } from "react-router-dom";
+import { useAuth } from "../Auth/AuthContext";
 
 type NavbarProps = {
   cartCount: number;
+  onLoginClick: () => void;
+  onLogoutClick: () => void;
   onCartClick: () => void;
 };
 
-const Navbar: React.FC<NavbarProps> = ({ cartCount, onCartClick }) => {
+const Navbar: React.FC<NavbarProps> = ({
+  cartCount,
+  onLoginClick,
+  onLogoutClick,
+  onCartClick,
+}) => {
+  const { user } = useAuth();
+  console.log("User: ", user);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleDropdownToggle = () => setDropdownOpen((open) => !open);
@@ -35,19 +45,29 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, onCartClick }) => {
           >
             ☰
           </button>
-            <div className={`navbar-dropdown-menu${dropdownOpen ? " open" : ""}`}>
-              <Link to="/" onClick={() => setDropdownOpen(false)}>
-                Home
-              </Link>
-              <Link to="/profile" onClick={() => setDropdownOpen(false)}>
-                Profile
-              </Link>
-              <Link to="/checkout" onClick={() => setDropdownOpen(false)}>
-                Checkout
-              </Link>
-            </div>
+          <div className={`navbar-dropdown-menu${dropdownOpen ? " open" : ""}`}>
+            <Link to="/" onClick={() => setDropdownOpen(false)}>
+              Home
+            </Link>
+            <Link to="/profile" onClick={() => setDropdownOpen(false)}>
+              Profile
+            </Link>
+            <Link to="/checkout" onClick={() => setDropdownOpen(false)}>
+              Checkout
+            </Link>
+          </div>
         </div>
         <div className="navbar-right">
+          {!user && (
+            <button className="log-btn" onClick={onLoginClick}>
+              Login
+            </button>
+          )}
+          {user && (
+            <button className="log-btn" onClick={onLogoutClick}>
+              Logout
+            </button>
+          )}
           <div
             className="cart-icon-wrapper"
             onClick={onCartClick}
