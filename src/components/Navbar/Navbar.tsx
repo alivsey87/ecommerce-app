@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import "./navbar.css";
 import CartIcon from "../Icons/CartIcon";
+import { Link } from "react-router-dom";
 
 type NavbarProps = {
   cartCount: number;
@@ -8,25 +9,56 @@ type NavbarProps = {
 };
 
 const Navbar: React.FC<NavbarProps> = ({ cartCount, onCartClick }) => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const handleDropdownToggle = () => setDropdownOpen((open) => !open);
+
   return (
-    <nav className="navbar">
-      <div className="navbar-dropdown">
-        <button className="navbar-dropdown-toggle" tabIndex={0}>
-          ☰
-        </button>
-        <div className="navbar-dropdown-menu"></div>
-      </div>
-      <div className="navbar-right">
-        <div
-          className="cart-icon-wrapper"
-          onClick={onCartClick}
-          title="View Cart"
-        >
-          <CartIcon />
-          <span className="cart-badge">{cartCount}</span>
+    <>
+      <div className={`nav-bg${dropdownOpen ? " nav-bg--dropdown" : ""}`}></div>
+      <nav className="navbar">
+        <div className="navbar-left">
+          {/* Desktop links */}
+          <div className="navbar-links">
+            <Link to="/">Home</Link>
+            <Link to="/profile">Profile</Link>
+            <Link to="/checkout">Checkout</Link>
+          </div>
         </div>
-      </div>
-    </nav>
+        {/* Hamburger for mobile */}
+        <div className="navbar-dropdown">
+          <button
+            className="navbar-dropdown-toggle"
+            tabIndex={0}
+            onClick={handleDropdownToggle}
+            aria-label="Open navigation menu"
+          >
+            ☰
+          </button>
+            <div className={`navbar-dropdown-menu${dropdownOpen ? " open" : ""}`}>
+              <Link to="/" onClick={() => setDropdownOpen(false)}>
+                Home
+              </Link>
+              <Link to="/profile" onClick={() => setDropdownOpen(false)}>
+                Profile
+              </Link>
+              <Link to="/checkout" onClick={() => setDropdownOpen(false)}>
+                Checkout
+              </Link>
+            </div>
+        </div>
+        <div className="navbar-right">
+          <div
+            className="cart-icon-wrapper"
+            onClick={onCartClick}
+            title="View Cart"
+          >
+            <CartIcon className="cart-icon" />
+            <span className="cart-badge">{cartCount}</span>
+          </div>
+        </div>
+      </nav>
+    </>
   );
 };
 
