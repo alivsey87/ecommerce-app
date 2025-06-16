@@ -2,7 +2,18 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.container {
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.filt-container {
+  display: flex;
+  justify-content: center;
+}
+
+.prod-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -12,6 +23,29 @@ body {
   background-color: #dadddf;
   padding-top: 20px;
   min-height: 100vh;
+}
+
+.cat-label {
+    margin-right: 0.5rem;
+    display: none;
+}
+
+.cat-select {
+    background-color: #fff;
+    color: #235390;
+    border: 1.5px solid #235390;
+    border-radius: 8px;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    margin-right: 2rem;
+}
+
+.cat-select:focus,
+.cat-select:hover {
+    border-color: #4f8cff;
+    color: #4f8cff;
 }
 
 .btn-main {

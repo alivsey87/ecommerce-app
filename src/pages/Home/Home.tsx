@@ -17,7 +17,6 @@ const Home: React.FC = () => {
   const selectedCategory = useSelector(
     (state: RootState) => state.products.selectedCategory
   );
- 
 
   const { data: productsData } = useQuery({
     queryKey: ["products"],
@@ -40,9 +39,6 @@ const Home: React.FC = () => {
     return products;
   }, [products, selectedCategory]);
 
-
- 
-
   useEffect(() => {
     if (productsData) {
       dispatch(setProducts(productsData));
@@ -52,29 +48,30 @@ const Home: React.FC = () => {
   return (
     <>
       <div className="bg-color">
-        <div className="navbar-left">
-          <label htmlFor="category-select" className="navbar-label">
-            Filter by category
-          </label>
-          <select
-            id="category-select"
-            className="navbar-select"
-            onChange={(e) => dispatch(setSelectedCategory(e.target.value))}
-            value={selectedCategory}
-          >
-            <option value="">All</option>
-            {categories?.map((category) => (
-              <option value={category} key={category}>
-                {category}
-              </option>
+        <div className="main-container">
+          <div className="filt-container">
+            <label htmlFor="category-select" className="cat-label">
+              Filter by category
+            </label>
+            <select
+              id="category-select"
+              className="cat-select"
+              onChange={(e) => dispatch(setSelectedCategory(e.target.value))}
+              value={selectedCategory}
+            >
+              <option value="">All</option>
+              {categories?.map((category) => (
+                <option value={category} key={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="prod-container">
+            {filteredProducts.map((product: Product) => (
+              <ProductCard product={product} key={product.id} />
             ))}
-          </select>
-        </div>
-
-        <div className="container">
-          {filteredProducts.map((product: Product) => (
-            <ProductCard product={product} key={product.id} />
-          ))}
+          </div>
         </div>
       </div>
     </>

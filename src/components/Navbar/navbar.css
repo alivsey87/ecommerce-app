@@ -26,34 +26,6 @@
     gap: 1rem;
 }
 
-.navbar-label {
-    margin-right: 0.5rem;
-    display: none;
-}
-
-.navbar-select {
-    background-color: #fff;
-    color: #235390;
-    border: 1.5px solid #235390;
-    border-radius: 8px;
-    padding: 0.75rem 2rem;
-    font-size: 1rem;
-    font-weight: 600;
-    font-family: inherit;
-    margin-right: 0.5rem;
-}
-
-.navbar-select:focus,
-.navbar-select:hover {
-    border-color: #4f8cff;
-    color: #4f8cff;
-}
-
-.navbar-select,
-.navbar-btn {
-    margin-right: 0.5rem;
-}
-
 .navbar-dropdown {
     display: none;
     position: relative;
