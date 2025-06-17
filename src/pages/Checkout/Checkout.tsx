@@ -1,4 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../../firebase/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import {
   clearCart,
@@ -12,18 +14,39 @@ import "./Checkout.css";
 
 const Checkout: React.FC = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
+  const user = useSelector((state: RootState) => state.user.user);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
-  const handlePurchase = () => {
-    setShowModal(true);
-    setTimeout(() => {
-      dispatch(clearCart());
-      sessionStorage.removeItem("cart");
-      setShowModal(false);
-      navigate("/");
-    }, 2500);
+  const handlePurchase = async () => {
+    if (!user) {
+      setShowModal(true);
+      setTimeout(() => {
+        dispatch(clearCart());
+        sessionStorage.removeItem("cart");
+        setShowModal(false);
+        navigate("/");
+      }, 2500);
+    } else {
+      try {
+        await addDoc(collection(db, "orders"), {
+          userId: user.uid,
+          items: cartItems,
+          total,
+          createdAt: serverTimestamp(),
+        });
+        setShowModal(true);
+        setTimeout(() => {
+          dispatch(clearCart());
+          sessionStorage.removeItem("cart");
+          setShowModal(false);
+          navigate("/");
+        }, 2500);
+      } catch {
+        alert("Failed to place order.");
+      }
+    }
   };
 
   // Calculate total using quantity

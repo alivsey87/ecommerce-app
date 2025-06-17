@@ -20,6 +20,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/firebaseConfig";
 import { setUser, clearUser } from "../features/user/userSlice";
 import RegistrationForm from "./Auth/RegistrationForm";
+import Orders from "../pages/Profile/Orders";
 
 const MainLayout = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -109,6 +110,7 @@ const MainLayout = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/orders" element={<Orders />} />
         <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </>
