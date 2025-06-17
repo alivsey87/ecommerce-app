@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Routes, Route } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
@@ -15,12 +15,11 @@ import Profile from "../pages/Profile/Profile";
 import Checkout from "../pages/Checkout/Checkout";
 import LoginForm from "./Auth/LoginForm";
 import { signOut } from "firebase/auth";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "../firebase/firebaseConfig";
-import { setUser, clearUser } from "../features/user/userSlice";
+import { auth } from "../firebase/firebaseConfig";
+import { clearUser } from "../features/user/userSlice";
 import RegistrationForm from "./Auth/RegistrationForm";
 import Orders from "../pages/Profile/Orders";
+import AuthListener from "./Auth/AuthListener";
 
 const MainLayout = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -37,32 +36,11 @@ const MainLayout = () => {
     [cartItems]
   );
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
-        if (userDoc.exists()) {
-          const userData = userDoc.data();
-          dispatch(
-            setUser({
-              uid: firebaseUser.uid,
-              email: userData.email,
-              name: userData.name,
-            })
-          );
-        }
-      } else {
-        dispatch(clearUser());
-      }
-    });
-    return () => unsubscribe();
-  }, [dispatch]);
-
   const [showCartModal, setShowCartModal] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showRegForm, setShowRegForm] = useState(false);
   const [showError, setShowError] = useState(false);
-  
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -75,6 +53,7 @@ const MainLayout = () => {
 
   return (
     <>
+      <AuthListener />
       <Navbar
         cartCount={cartCount}
         onCartClick={() => setShowCartModal(true)}
