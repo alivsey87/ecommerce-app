@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase/firebaseConfig";
-import { useAuth } from "./AuthContext";
 
 type LoginFormProps = {
   onClose: () => void;
@@ -11,18 +10,13 @@ const LoginForm = ({ onClose }: LoginFormProps) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
-  const { setUser } = useAuth();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      setUser(userCredential.user);
+      await signInWithEmailAndPassword(auth, email, password);
+
       alert("Login successful!");
       onClose();
     } catch (err: unknown) {

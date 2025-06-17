@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import "./navbar.css";
 import CartIcon from "../Icons/CartIcon";
 import { Link } from "react-router-dom";
-import { useAuth } from "../Auth/AuthContext";
+import { type RootState } from "../../app/store";
+import { useSelector } from "react-redux";
 
 type NavbarProps = {
   cartCount: number;
   onLoginClick: () => void;
+  onRegClick: () => void;
   onLogoutClick: () => void;
   onCartClick: () => void;
 };
@@ -14,11 +16,11 @@ type NavbarProps = {
 const Navbar: React.FC<NavbarProps> = ({
   cartCount,
   onLoginClick,
+  onRegClick,
   onLogoutClick,
   onCartClick,
 }) => {
-  const { user } = useAuth();
-  console.log("User: ", user);
+  const user = useSelector((state: RootState) => state.user.user);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleDropdownToggle = () => setDropdownOpen((open) => !open);
@@ -59,14 +61,23 @@ const Navbar: React.FC<NavbarProps> = ({
         </div>
         <div className="navbar-right">
           {!user && (
-            <button className="log-btn" onClick={onLoginClick}>
-              Login
-            </button>
+            <div className="log-reg-btns">
+              <button className="log-btn" onClick={onLoginClick}>
+                Login
+              </button>
+              <span>or</span>
+              <button className="log-btn" onClick={onRegClick}>
+                Register
+              </button>
+            </div>
           )}
           {user && (
-            <button className="log-btn" onClick={onLogoutClick}>
-              Logout
-            </button>
+            <div className="log-in-cont">
+              <span>{user.name || user.email}</span>
+              <button className="log-btn" onClick={onLogoutClick}>
+                Logout
+              </button>
+            </div>
           )}
           <div
             className="cart-icon-wrapper"

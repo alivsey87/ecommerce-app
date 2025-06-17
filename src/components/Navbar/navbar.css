@@ -50,7 +50,7 @@
     display: flex;
     align-items: center;
     justify-self: end;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 .navbar-dropdown {
@@ -136,6 +136,27 @@
     cursor: pointer;
 }
 
+.log-in-cont {
+    display: flex;
+    gap: 0.7rem;
+}
+
+.log-in-cont span {
+    width: 100px;
+    color: rgba(255, 255, 255, 0.7);
+    transform: translateY(7px);
+}
+
+.log-reg-btns {
+    display: flex;
+    gap: 0.7rem;
+}
+
+.log-reg-btns span {
+    transform: translateY(7px);
+    color: rgba(255, 255, 255, 0.7);
+}
+
 .cart-icon-wrapper {
     position: relative;
     display: inline-block;
@@ -167,5 +188,11 @@
 
     .navbar-dropdown {
         display: flex;
+    }
+}
+
+@media (max-width: 1000px) {
+    .navbar-links {
+        gap: 4rem;
     }
 }

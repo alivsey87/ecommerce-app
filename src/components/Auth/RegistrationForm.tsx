@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../firebase/firebaseConfig";
-import { collection, addDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 type RegistrationFormProps = {
   onClose: () => void;
@@ -9,7 +9,6 @@ type RegistrationFormProps = {
 
 const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
   const [name, setName] = useState<string>("");
-  const [dispName, setDispName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -22,10 +21,9 @@ const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
         email,
         password
       );
-      const userData = { id: userCredential.user.uid, dispName, name, email };
-      await addDoc(collection(db, "users"), userData);
+      const userData = { uid: userCredential.user.uid, name, email };
+      await setDoc(doc(db, "users", userCredential.user.uid), userData);
       alert("Registration successful!\n Please login");
-      setDispName('');
       setName("");
       setEmail("");
       setPassword("");
@@ -41,12 +39,6 @@ const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
 
   return (
     <form onSubmit={handleRegister}>
-      <input
-        type="text"
-        placeholder="Display Name"
-        value={dispName}
-        onChange={(e) => setDispName(e.target.value)}
-      />
       <input
         type="text"
         placeholder="Name"

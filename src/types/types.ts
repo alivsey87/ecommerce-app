@@ -14,14 +14,13 @@ export interface Product {
 export type Category = string;
 
 export interface CartItem {
-  product: Product;
-  quantity: number;
+    product: Product;
+    quantity: number;
 }
 
 export interface User {
-    id?: string;
-    name: string;
-    age: number;
+    uid: string;
     email: string;
+    name?: string;
 }
 
