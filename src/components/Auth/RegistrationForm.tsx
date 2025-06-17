@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth, db } from "../../firebase/firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
 
@@ -23,6 +23,7 @@ const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
       );
       const userData = { uid: userCredential.user.uid, name, email };
       await setDoc(doc(db, "users", userCredential.user.uid), userData);
+      await signOut(auth);
       alert("Registration successful!\n Please login");
       setName("");
       setEmail("");
