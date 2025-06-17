@@ -5,12 +5,20 @@ import { db } from "../../firebase/firebaseConfig";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../app/store";
 import Modal from "../../components/Modal/Modal";
+import { useNavigate } from "react-router-dom";
 
 const Orders = () => {
   const user = useSelector((state: RootState) => state.user.user);
   const [orders, setOrders] = useState<Order[]>([]);
+  const navigate = useNavigate();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/", { replace: true });
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     const fetchOrders = async () => {
