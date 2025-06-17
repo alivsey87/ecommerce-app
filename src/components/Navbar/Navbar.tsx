@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./navbar.css";
 import CartIcon from "../Icons/CartIcon";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { type RootState } from "../../app/store";
 import { useSelector } from "react-redux";
 
@@ -21,6 +21,7 @@ const Navbar: React.FC<NavbarProps> = ({
   onCartClick,
 }) => {
   const user = useSelector((state: RootState) => state.user.user);
+  const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleDropdownToggle = () => setDropdownOpen((open) => !open);
@@ -73,7 +74,7 @@ const Navbar: React.FC<NavbarProps> = ({
           )}
           {user && (
             <div className="log-in-cont">
-              <span>{user.name || user.email}</span>
+              <span onClick={() => navigate('/profile')}>{user.name || user.email}</span>
               <button className="log-btn" onClick={onLogoutClick}>
                 Logout
               </button>

@@ -144,7 +144,8 @@
 .log-in-cont span {
     width: 100px;
     color: rgba(255, 255, 255, 0.7);
-    transform: translateY(7px);
+    transform: translateY(9px);
+    cursor: pointer;
 }
 
 .log-reg-btns {
