@@ -11,7 +11,7 @@ import {
 } from "../features/cart/cartSlice";
 import type { RootState, AppDispatch } from "../app/store";
 import Home from "../pages/Home/Home";
-// import Profile from "../pages/Profile/Profile";
+import Profile from "../pages/Profile/Profile";
 import Checkout from "../pages/Checkout/Checkout";
 import LoginForm from "./Auth/LoginForm";
 import { signOut } from "firebase/auth";
@@ -108,7 +108,7 @@ const MainLayout = () => {
       </Modal>
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/profile" element={<Profile />} /> */}
+        <Route path="/profile" element={<Profile />} />
         <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </>
