@@ -1,45 +1,58 @@
-import { useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Routes, Route } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar";
-import Modal from "../components/Modal/Modal";
-import CartModalContent from "../features/cart/CartModalContent";
+import { useState } from "react";
+import type { RootState, AppDispatch } from "../app/store";
 import {
-  clearCart,
   updateQuantity,
   removeFromCart,
+  clearCart,
 } from "../features/cart/cartSlice";
-import type { RootState, AppDispatch } from "../app/store";
+import { type Product } from "../types/types";
+import AuthListener from "./Auth/AuthListener";
+import Navbar from "./Navbar/Navbar";
+import Modal from "../components/Modal/Modal";
+import LoginForm from "./Auth/LoginForm";
+import RegistrationForm from "./Auth/RegistrationForm";
+import CartModalContent from "../features/cart/CartModalContent";
 import Home from "../pages/Home/Home";
 import Profile from "../pages/Profile/Profile";
-import Checkout from "../pages/Checkout/Checkout";
-import LoginForm from "./Auth/LoginForm";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase/firebaseConfig";
-import { clearUser } from "../features/user/userSlice";
-import RegistrationForm from "./Auth/RegistrationForm";
 import Orders from "../pages/Profile/Orders";
-import AuthListener from "./Auth/AuthListener";
+import Checkout from "../pages/Checkout/Checkout";
+import { auth } from "../firebase/firebaseConfig";
+import { signOut } from "firebase/auth";
+import { clearUser } from "../features/user/userSlice";
 
-const MainLayout = () => {
+const MainApp = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const [error, setError] = useState<string | null>(null);
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const cartTotal = useMemo(
-    () =>
-      cartItems.reduce(
-        (sum, item) => sum + Number(item.product.price) * item.quantity,
-        0
-      ),
-    [cartItems]
+  const products = useSelector((state: RootState) => state.products.products);
+
+  // Map cart items to include latest product data
+  const cartWithProducts = cartItems
+    .map((item) => {
+      const product = products.find(
+        (p) => String(p.id) === String(item.productId)
+      );
+      if (!product) return null;
+      return { product, quantity: item.quantity };
+    })
+    .filter(Boolean) as { product: Product; quantity: number }[];
+
+  const cartCount = cartWithProducts.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+  const cartTotal = cartWithProducts.reduce(
+    (sum, item) => sum + Number(item.product.price) * item.quantity,
+    0
   );
 
   const [showCartModal, setShowCartModal] = useState(false);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showRegForm, setShowRegForm] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [error, setError] = useState("");
 
   const handleLogout = async () => {
     try {
@@ -69,11 +82,11 @@ const MainLayout = () => {
       </Modal>
       <Modal isOpen={showCartModal} onClose={() => setShowCartModal(false)}>
         <CartModalContent
-          cartItems={cartItems}
+          cartItems={cartWithProducts}
           cartTotal={cartTotal}
           onClose={() => setShowCartModal(false)}
           onUpdateQuantity={(id, quantity) =>
-            dispatch(updateQuantity({ id, quantity }))
+            dispatch(updateQuantity({ productId: id, quantity }))
           }
           onRemoveFromCart={(id) => dispatch(removeFromCart(id))}
           onClearCart={() => dispatch(clearCart())}
@@ -96,4 +109,4 @@ const MainLayout = () => {
   );
 };
 
-export default MainLayout;
+export default MainApp;

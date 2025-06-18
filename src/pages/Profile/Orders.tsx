@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const Orders = () => {
   const user = useSelector((state: RootState) => state.user.user);
+  const products = useSelector((state: RootState) => state.products.products);
   const [orders, setOrders] = useState<Order[]>([]);
   const navigate = useNavigate();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -112,11 +113,18 @@ const Orders = () => {
             <div>
               <strong>Items:</strong>
               <ul>
-                {selectedOrder.items.map((item, idx) => (
-                  <li key={idx}>
-                    {item.product.title} x {item.quantity}
-                  </li>
-                ))}
+                {selectedOrder.items.map((item, idx) => {
+                  const product = products.find(
+                    (p) => String(p.id) === String(item.productId)
+                  );
+                  return (
+                    <li key={idx}>
+                      {product
+                        ? `${product.title} x ${item.quantity}`
+                        : `Product (ID: ${item.productId}) x ${item.quantity}`}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </div>

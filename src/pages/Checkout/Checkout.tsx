@@ -11,13 +11,31 @@ import type { RootState, AppDispatch } from "../../app/store";
 import { useState } from "react";
 import Modal from "../../components/Modal/Modal";
 import "./Checkout.css";
+import type { Product } from "../../types/types";
 
 const Checkout: React.FC = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items);
+  const products = useSelector((state: RootState) => state.products.products);
   const user = useSelector((state: RootState) => state.user.user);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+
+  // Map cart items to include latest product data
+  const cartWithProducts = cartItems
+    .map((item) => {
+      const product = products.find(
+        (p) => String(p.id) === String(item.productId)
+      );
+      if (!product) return null;
+      return { product, quantity: item.quantity };
+    })
+    .filter(Boolean) as { product: Product; quantity: number }[];
+
+  const total = cartWithProducts.reduce(
+    (sum, item) => sum + Number(item.product.price) * item.quantity,
+    0
+  );
 
   const handlePurchase = async () => {
     if (!user) {
@@ -32,7 +50,10 @@ const Checkout: React.FC = () => {
       try {
         await addDoc(collection(db, "orders"), {
           userId: user.uid,
-          items: cartItems,
+          items: cartWithProducts.map(({ product, quantity }) => ({
+            productId: product.id,
+            quantity,
+          })),
           total,
           createdAt: serverTimestamp(),
         });
@@ -49,22 +70,16 @@ const Checkout: React.FC = () => {
     }
   };
 
-  // Calculate total using quantity
-  const total = cartItems.reduce(
-    (sum, item) => sum + Number(item.product.price) * item.quantity,
-    0
-  );
-
   return (
     <div className="checkout-container">
       <h1>Checkout</h1>
       <div className="checkout-content">
         <div className="checkout-products">
-          {cartItems.length === 0 ? (
+          {cartWithProducts.length === 0 ? (
             <p>Your cart is empty.</p>
           ) : (
             <ul>
-              {cartItems.map((item, idx) => (
+              {cartWithProducts.map((item, idx) => (
                 <li className="checkout-product" key={item.product.id || idx}>
                   <img
                     src={item.product.image}
@@ -81,7 +96,7 @@ const Checkout: React.FC = () => {
                         onClick={() =>
                           dispatch(
                             updateQuantity({
-                              id: item.product.id,
+                              productId: String(item.product.id),
                               quantity: item.quantity - 1,
                             })
                           )
@@ -98,7 +113,7 @@ const Checkout: React.FC = () => {
                         onClick={() =>
                           dispatch(
                             updateQuantity({
-                              id: item.product.id,
+                              productId: String(item.product.id),
                               quantity: item.quantity + 1,
                             })
                           )
@@ -109,7 +124,7 @@ const Checkout: React.FC = () => {
                       <button
                         className="btn-main checkout-remove-btn"
                         onClick={() =>
-                          dispatch(removeFromCart(item.product.id))
+                          dispatch(removeFromCart(String(item.product.id)))
                         }
                       >
                         Remove
@@ -123,7 +138,7 @@ const Checkout: React.FC = () => {
         </div>
         <div className="checkout-summary">
           <div className="checkout-total">Total: ${total.toFixed(2)}</div>
-          {cartItems.length > 0 && (
+          {cartWithProducts.length > 0 && (
             <button className="btn-main" onClick={handlePurchase}>
               Purchase
             </button>

@@ -4,6 +4,12 @@ import { Rating } from "@smastrom/react-rating";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../features/cart/cartSlice";
 
+type ProductCardProps = {
+  product: Product;
+  setEditProduct: (product: Product) => void;
+  handleDeleteProduct: (id: string) => void;
+};
+
 const StarDrawing = (
   <path
     d="M50,5 
@@ -26,7 +32,11 @@ const customStyles = {
   inactiveFillColor: "#97ceff",
 };
 
-const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  setEditProduct,
+  handleDeleteProduct,
+}) => {
   const dispatch = useDispatch();
   return (
     <div className="product-card">
@@ -42,9 +52,20 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
         itemStyles={customStyles}
         readOnly
       />
-      <button className="btn-main" onClick={() => dispatch(addToCart(product))}>
+      <button
+        className="btn-main"
+        onClick={() => dispatch(addToCart({ productId: String(product.id) }))}
+      >
         Add to Cart
       </button>
+      {product.isFirestoreProduct && (
+        <>
+          <button onClick={() => setEditProduct(product)}>Edit</button>
+          <button onClick={() => handleDeleteProduct(String(product.id))}>
+            Delete
+          </button>
+        </>
+      )}
     </div>
   );
 };

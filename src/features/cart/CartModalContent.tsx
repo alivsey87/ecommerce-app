@@ -1,12 +1,12 @@
-import type { CartItem } from "../../types/types";
-import './cart.css';
+import type { Product } from "../../types/types";
+import "./cart.css";
 
 interface CartModalProps {
-  cartItems: CartItem[];
+  cartItems: { product: Product; quantity: number }[];
   cartTotal: number;
   onClose: () => void;
-  onUpdateQuantity: (id: number, quantity: number) => void;
-  onRemoveFromCart: (id: number) => void;
+  onUpdateQuantity: (productId: string, quantity: number) => void;
+  onRemoveFromCart: (productId: string) => void;
   onClearCart: () => void;
   onCheckout: () => void;
 }
@@ -44,7 +44,10 @@ const CartModalContent: React.FC<CartModalProps> = ({
                   <button
                     className="btn-main cart-modal-qty-btn"
                     onClick={() =>
-                      onUpdateQuantity(item.product.id, item.quantity - 1)
+                      onUpdateQuantity(
+                        String(item.product.id),
+                        item.quantity - 1
+                      )
                     }
                     disabled={item.quantity <= 1}
                   >
@@ -54,14 +57,17 @@ const CartModalContent: React.FC<CartModalProps> = ({
                   <button
                     className="btn-main cart-modal-qty-btn"
                     onClick={() =>
-                      onUpdateQuantity(item.product.id, item.quantity + 1)
+                      onUpdateQuantity(
+                        String(item.product.id),
+                        item.quantity + 1
+                      )
                     }
                   >
                     +
                   </button>
                   <button
                     className="btn-main cart-modal-remove-btn"
-                    onClick={() => onRemoveFromCart(item.product.id)}
+                    onClick={() => onRemoveFromCart(String(item.product.id))}
                   >
                     Remove
                   </button>
