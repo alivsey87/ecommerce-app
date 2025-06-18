@@ -1,5 +1,5 @@
 import type { Product } from "../../types/types";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import "./Home.css";
 import { useSelector, useDispatch } from "react-redux";
@@ -71,7 +71,7 @@ const Home: React.FC = () => {
   };
 
   // Fetch Firestore products and merge with API products
-  const fetchFirestoreProducts = async () => {
+  const fetchFirestoreProducts = useCallback(async () => {
     const snapshot = await getDocs(collection(db, "products"));
     const firestoreProducts = snapshot.docs.map((doc) => ({
       ...(doc.data() as Product),
@@ -84,7 +84,7 @@ const Home: React.FC = () => {
         !firestoreProducts.some((fp) => fp.id === apiProd.id)
     );
     dispatch(setProducts([...firestoreProducts, ...apiOnlyProducts]));
-  };
+  }, [dispatch, productsData]);
 
   const filteredProducts = useMemo(() => {
     if (selectedCategory) {
@@ -99,7 +99,7 @@ const Home: React.FC = () => {
     if (productsData) {
       fetchFirestoreProducts();
     }
-  }, [productsData, dispatch]);
+  }, [productsData, fetchFirestoreProducts]);
 
   return (
     <>
@@ -122,13 +122,14 @@ const Home: React.FC = () => {
                 </option>
               ))}
             </select>
-            <button onClick={() => setShowProductModal(true)}>
+            <button className="create-btn" onClick={() => setShowProductModal(true)}>
               Create Product
             </button>
             <ProductModal
               isOpen={showProductModal}
               onClose={() => setShowProductModal(false)}
               onSave={handleCreateProduct}
+              categories={categories || []}
             />
             {editProduct && (
               <ProductModal
@@ -136,6 +137,7 @@ const Home: React.FC = () => {
                 onClose={() => setEditProduct(null)}
                 onSave={handleEditProduct}
                 initialProduct={editProduct}
+                categories={categories || []}
               />
             )}
           </div>

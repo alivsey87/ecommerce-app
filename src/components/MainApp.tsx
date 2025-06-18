@@ -40,11 +40,13 @@ const MainApp = () => {
     .filter(Boolean) as { product: Product; quantity: number }[];
 
   const cartCount = cartWithProducts.reduce(
-    (sum, item) => sum + item.quantity,
+    (sum, item) => sum + (item?.quantity || 0),
     0
   );
   const cartTotal = cartWithProducts.reduce(
-    (sum, item) => sum + Number(item.product.price) * item.quantity,
+    (sum, item) =>
+      sum +
+      (item?.product?.price ? Number(item.product.price) * item.quantity : 0),
     0
   );
 

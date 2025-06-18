@@ -16,6 +16,28 @@ body {
   justify-content: center;
 }
 
+.create-btn {
+  background-color: white;
+  color: #235390;
+  font-weight: bold;
+  border: 1px solid #235390;
+  border-radius: 10px;
+  padding: 0 10px;
+}
+
+.create-btn:focus,
+.create-btn:hover {
+  border-color: #4f8cff;
+  color: #4f8cff;
+  cursor: pointer;
+}
+
+.create-btn:active {
+  background-color: #235390;
+  color: white;
+  border: 1px solid white;
+}
+
 .prod-container {
   display: flex;
   flex-wrap: wrap;

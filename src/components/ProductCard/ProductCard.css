@@ -26,3 +26,9 @@
 .product-image {
     width: 100px;
 }
+
+.edit-btns {
+    display: flex;
+    gap: 0.5rem;
+    padding-top: 1rem;
+}

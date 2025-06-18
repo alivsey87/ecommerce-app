@@ -59,12 +59,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
         Add to Cart
       </button>
       {product.isFirestoreProduct && (
-        <>
-          <button onClick={() => setEditProduct(product)}>Edit</button>
-          <button onClick={() => handleDeleteProduct(String(product.id))}>
+        <div className="edit-btns">
+          <button className="btn-main" onClick={() => setEditProduct(product)}>Edit</button>
+          <button className="btn-main" onClick={() => handleDeleteProduct(String(product.id))}>
             Delete
           </button>
-        </>
+        </div>
       )}
     </div>
   );
