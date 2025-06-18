@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth, db } from "../../firebase/firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
+import './registration.css';
 
 type RegistrationFormProps = {
   onClose: () => void;
@@ -39,7 +40,8 @@ const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
   };
 
   return (
-    <form onSubmit={handleRegister}>
+    <form className="main-form" onSubmit={handleRegister}>
+      <h3 className="form-head">Registration</h3>
       <input
         type="text"
         placeholder="Name"
@@ -58,7 +60,7 @@ const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button type="submit">Register</button>
+      <button className="btn-main" type="submit">Register</button>
       {error && <p>{error}</p>}
     </form>
   );

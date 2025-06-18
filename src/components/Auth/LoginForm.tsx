@@ -26,7 +26,8 @@ const LoginForm = ({ onClose }: LoginFormProps) => {
 
   return (
     <>
-      <form onSubmit={handleLogin}>
+      <form className="main-form" onSubmit={handleLogin}>
+        <h3 className="form-head">Login</h3>
         <input
           type="email"
           placeholder="Email"
@@ -39,7 +40,7 @@ const LoginForm = ({ onClose }: LoginFormProps) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit">Login</button>
+        <button className="btn-main" type="submit">Login</button>
         {error && <p>{error}</p>}
       </form>
     </>
