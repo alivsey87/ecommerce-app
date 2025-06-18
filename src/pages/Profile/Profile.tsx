@@ -20,6 +20,7 @@ import { auth, db } from "../../firebase/firebaseConfig";
 import { useDispatch } from "react-redux";
 import { setUser, clearUser } from "../../features/user/userSlice";
 import Modal from "../../components/Modal/Modal";
+import "./profile.css";
 
 const Profile: React.FC = () => {
   const user = useSelector((state: RootState) => state.user.user);
@@ -67,6 +68,8 @@ const Profile: React.FC = () => {
       await deleteDoc(doc(db, "users", user.uid));
 
       await deleteUser(auth.currentUser);
+      setPassword('');
+      setShowDelete(false);
 
       dispatch(clearUser());
 
@@ -77,43 +80,64 @@ const Profile: React.FC = () => {
         "Failed to delete account: " +
           (err instanceof Error ? err.message : "Unknown error")
       );
+      setPassword('');
     }
   };
 
   return (
-    <div>
+    <div className="profile-container">
       {!user && <h1>Please Login or Register</h1>}
       {user && (
         <div>
-          <h1>Welcome {user.name || user.email}</h1>
-          <button onClick={() => navigate("/profile/orders")}>
-            View My Orders
-          </button>
-          <button onClick={() => setShowDelete(true)}>Delete account</button>
-          <button onClick={() => setShowEdit(true)}>Edit Profile</button>
+          <h1>{user.name || user.email}</h1>
+
+          <div className="profile-btns">
+            <button
+              className="btn-main"
+              onClick={() => navigate("/profile/orders")}
+            >
+              View My Orders
+            </button>
+            <button className="btn-main" onClick={() => setShowEdit(true)}>
+              Edit Profile
+            </button>
+            <button className="btn-main" onClick={() => setShowDelete(true)}>
+              Delete account
+            </button>
+          </div>
 
           <Modal isOpen={showEdit} onClose={() => setShowEdit(false)}>
-            <form onSubmit={handleNameUpdate}>
-              <h3>Edit Profile</h3>
-              <label>
-                Name:
-                <input
-                  type="text"
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                  required
-                />
-              </label>
+            <form className="edit-form" onSubmit={handleNameUpdate}>
+              <h3 className="form-head">Edit Profile</h3>
+
+              <div className="form-row">
+                <label className="form-label">
+                  Name:
+                  <input
+                    type="text"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    required
+                  />
+                </label>
+              </div>
+
               {editError && <p style={{ color: "red" }}>{editError}</p>}
-              <button type="submit">Save</button>
-              <button type="button" onClick={() => setShowEdit(false)}>
+              <button className="btn-main" type="submit">
+                Save
+              </button>
+              <button
+                className="btn-main"
+                type="button"
+                onClick={() => setShowEdit(false)}
+              >
                 Cancel
               </button>
             </form>
           </Modal>
 
           <Modal isOpen={showDelete} onClose={() => setShowDelete(false)}>
-            <div>
+            <div className="delete-form">
               <h3>Are you sure you want to delete your account?</h3>
               <p>This action cannot be reversed.</p>
               <input
@@ -122,8 +146,12 @@ const Profile: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <button onClick={handleAccountDelete}>Yes</button>
-              <button onClick={() => setShowDelete(false)}>No</button>
+              <button className="btn-main" onClick={handleAccountDelete}>
+                Yes
+              </button>
+              <button className="btn-main" onClick={() => setShowDelete(false)}>
+                No
+              </button>
             </div>
           </Modal>
         </div>
