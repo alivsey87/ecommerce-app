@@ -40,7 +40,7 @@ const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
   };
 
   return (
-    <form className="main-form" onSubmit={handleRegister}>
+    <form className="main-reg-form" onSubmit={handleRegister}>
       <h3 className="form-head">Registration</h3>
       <input
         type="text"

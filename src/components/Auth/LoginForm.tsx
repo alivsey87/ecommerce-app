@@ -26,7 +26,7 @@ const LoginForm = ({ onClose }: LoginFormProps) => {
 
   return (
     <>
-      <form className="main-form" onSubmit={handleLogin}>
+      <form className="main-login-form" onSubmit={handleLogin}>
         <h3 className="form-head">Login</h3>
         <input
           type="email"
