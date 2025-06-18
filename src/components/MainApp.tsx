@@ -89,7 +89,7 @@ const MainLayout = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/orders" element={<Orders />} />
+        <Route path="/profile/orders" element={<Orders />} />
         <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </>

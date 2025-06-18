@@ -16,7 +16,7 @@ const Orders = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/", { replace: true });
+      navigate("/profile", { replace: true });
     }
   }, [user, navigate]);
 
