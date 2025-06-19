@@ -21,7 +21,7 @@ const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
-  // Map cart items to include latest product data
+  
   const cartWithProducts = cartItems
     .map((item) => {
       const product = products.find(
