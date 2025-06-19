@@ -1,8 +1,6 @@
 import type { Product } from "../../types/types";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import ProductCard from "../../components/ProductCard/ProductCard";
-import CartModal from "../../components/CartModal/CartModal";
-import Navbar from "../../components/Navbar/Navbar";
 import "./Home.css";
 import { useSelector, useDispatch } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
@@ -11,22 +9,26 @@ import {
   setProducts,
   setSelectedCategory,
 } from "../../features/products/productSlice";
+import ProductModal from "../../components/ProductModal/ProductModal";
 import {
-  clearCart,
-  updateQuantity,
-  removeFromCart,
-} from "../../features/cart/cartSlice";
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
+import { db } from "../../firebase/firebaseConfig";
 import type { RootState, AppDispatch } from "../../app/store";
-import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const products = useSelector((state: RootState) => state.products.products);
   const selectedCategory = useSelector(
     (state: RootState) => state.products.selectedCategory
   );
-  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const [showProductModal, setShowProductModal] = useState(false);
+  const [editProduct, setEditProduct] = useState<Product | null>(null);
 
   const { data: productsData } = useQuery({
     queryKey: ["products"],
@@ -40,6 +42,50 @@ const Home: React.FC = () => {
     staleTime: 1000 * 60 * 60,
   });
 
+  // Handler to create product
+  const handleCreateProduct = async (product: Product) => {
+    await addDoc(collection(db, "products"), {
+      ...product,
+      isFirestoreProduct: true,
+    });
+    // Fetch updated products from Firestore and update global state
+    fetchFirestoreProducts();
+    setShowProductModal(false);
+  };
+
+  // Handler to edit product
+  const handleEditProduct = async (product: Product) => {
+    if (!product.id) return;
+    await updateDoc(doc(db, "products", String(product.id)), {
+      ...product,
+      isFirestoreProduct: true,
+    });
+    fetchFirestoreProducts();
+    setEditProduct(null);
+  };
+
+  // Handler to delete product
+  const handleDeleteProduct = async (productId: string) => {
+    await deleteDoc(doc(db, "products", productId));
+    fetchFirestoreProducts();
+  };
+
+  // Fetch Firestore products and merge with API products
+  const fetchFirestoreProducts = useCallback(async () => {
+    const snapshot = await getDocs(collection(db, "products"));
+    const firestoreProducts = snapshot.docs.map((doc) => ({
+      ...(doc.data() as Product),
+      id: doc.id,
+      isFirestoreProduct: true,
+    }));
+    // Merge with API products, but avoid duplicates (optional)
+    const apiOnlyProducts = (productsData || []).filter(
+      (apiProd: Product) =>
+        !firestoreProducts.some((fp) => fp.id === apiProd.id)
+    );
+    dispatch(setProducts([...firestoreProducts, ...apiOnlyProducts]));
+  }, [dispatch, productsData]);
+
   const filteredProducts = useMemo(() => {
     if (selectedCategory) {
       return products.filter(
@@ -49,57 +95,62 @@ const Home: React.FC = () => {
     return products;
   }, [products, selectedCategory]);
 
-  const cartTotal = useMemo(
-    () =>
-      cartItems.reduce(
-        (sum, item) => sum + Number(item.product.price) * item.quantity,
-        0
-      ),
-    [cartItems]
-  );
-
-  const [showCartModal, setShowCartModal] = useState(false);
-
   useEffect(() => {
     if (productsData) {
-      dispatch(setProducts(productsData));
+      fetchFirestoreProducts();
     }
-  }, [productsData, dispatch]);
+  }, [productsData, fetchFirestoreProducts]);
 
   return (
     <>
       <div className="bg-color">
-        <Navbar
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onCategoryChange={(category) =>
-            dispatch(setSelectedCategory(category))
-          }
-          onClearFilter={() => dispatch(setSelectedCategory(""))}
-          cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
-          onCartClick={() => setShowCartModal(true)}
-        />
-
-        {showCartModal && (
-          <CartModal
-            cartItems={cartItems}
-            cartTotal={cartTotal}
-            onClose={() => setShowCartModal(false)}
-            onUpdateQuantity={(id, quantity) =>
-              dispatch(updateQuantity({ id, quantity }))
-            }
-            onRemoveFromCart={(id) => dispatch(removeFromCart(id))}
-            onClearCart={() => dispatch(clearCart())}
-            onCheckout={() => {
-              setShowCartModal(false);
-              navigate("/checkout");
-            }}
-          />
-        )}
-        <div className="container">
-          {filteredProducts.map((product: Product) => (
-            <ProductCard product={product} key={product.id} />
-          ))}
+        <div className="main-container">
+          <div className="filt-container">
+            <label htmlFor="category-select" className="cat-label">
+              Filter by category
+            </label>
+            <select
+              id="category-select"
+              className="cat-select"
+              onChange={(e) => dispatch(setSelectedCategory(e.target.value))}
+              value={selectedCategory}
+            >
+              <option value="">All</option>
+              {categories?.map((category) => (
+                <option value={category} key={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+            <button className="create-btn" onClick={() => setShowProductModal(true)}>
+              Create Product
+            </button>
+            <ProductModal
+              isOpen={showProductModal}
+              onClose={() => setShowProductModal(false)}
+              onSave={handleCreateProduct}
+              categories={categories || []}
+            />
+            {editProduct && (
+              <ProductModal
+                isOpen={!!editProduct}
+                onClose={() => setEditProduct(null)}
+                onSave={handleEditProduct}
+                initialProduct={editProduct}
+                categories={categories || []}
+              />
+            )}
+          </div>
+          <div className="prod-container">
+            {filteredProducts.map((product: Product) => (
+              <ProductCard
+                product={product}
+                key={product.id}
+                setEditProduct={setEditProduct}
+                handleDeleteProduct={handleDeleteProduct}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </>

@@ -1,85 +1,97 @@
-import React from "react";
-import type { Category } from "../../types/types";
+import React, { useState } from "react";
+import "./navbar.css";
+import CartIcon from "../Icons/CartIcon";
+import { Link, useNavigate } from "react-router-dom";
+import { type RootState } from "../../app/store";
+import { useSelector } from "react-redux";
 
-interface NavbarProps {
-  categories: Category[] | undefined;
-  selectedCategory: string;
-  onCategoryChange: (category: string) => void;
-  onClearFilter: () => void;
+type NavbarProps = {
   cartCount: number;
+  onLoginClick: () => void;
+  onRegClick: () => void;
+  onLogoutClick: () => void;
   onCartClick: () => void;
-}
+};
 
 const Navbar: React.FC<NavbarProps> = ({
-  categories,
-  selectedCategory,
-  onCategoryChange,
-  onClearFilter,
   cartCount,
+  onLoginClick,
+  onRegClick,
+  onLogoutClick,
   onCartClick,
-}) => (
-  <nav className="navbar">
-    <div className="navbar-left">
-      <label htmlFor="category-select" className="navbar-label">
-        Filter by category
-      </label>
-      <select
-        id="category-select"
-        className="navbar-select"
-        onChange={(e) => onCategoryChange(e.target.value)}
-        value={selectedCategory}
-      >
-        <option value="">All Categories</option>
-        {categories?.map((category) => (
-          <option value={category} key={category}>
-            {category}
-          </option>
-        ))}
-      </select>
-      <button className="btn-main navbar-btn" onClick={onClearFilter}>
-        Clear Filter
-      </button>
-    </div>
-    <div className="navbar-dropdown">
-      <button className="navbar-dropdown-toggle" tabIndex={0}>
-        ☰
-      </button>
-      <div className="navbar-dropdown-menu">
-        <select
-          id="category-select-mobile"
-          className="navbar-select"
-          aria-label="Filter by category (mobile)"
-          onChange={(e) => onCategoryChange(e.target.value)}
-          value={selectedCategory}
-        >
-          <option value="">All Categories</option>
-          {categories?.map((category) => (
-            <option value={category} key={category}>
-              {category}
-            </option>
-          ))}
-        </select>
-        <button className="btn-main navbar-btn" onClick={onClearFilter}>
-          Clear Filter
-        </button>
-      </div>
-    </div>
-    <div className="navbar-right">
-      <div
-        className="cart-icon-wrapper"
-        onClick={onCartClick}
-        title="View Cart"
-      >
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M7 18c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm10 0c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm-12.293-2.707l1.414 1.414c.195.195.451.293.707.293h12c.552 0 1-.448 1-1s-.448-1-1-1h-11.586l-.707-.707c-.391-.391-1.023-.391-1.414 0s-.391 1.023 0 1.414zm15.293-2.293c0-.552-.448-1-1-1h-13.586l-.707-.707c-.391-.391-1.023-.391-1.414 0s-.391 1.023 0 1.414l2 2c.195.195.451.293.707.293h12c.552 0 1-.448 1-1zm-1-6c0-.552-.448-1-1-1h-10c-.552 0-1 .448-1 1s.448 1 1 1h10c.552 0 1-.448 1-1z"
-            fill="#333"
-          />
-        </svg>
-        <span className="cart-badge">{cartCount}</span>
-      </div>
-    </div>
-  </nav>
-);
+}) => {
+  const user = useSelector((state: RootState) => state.user.user);
+  const navigate = useNavigate();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const handleDropdownToggle = () => setDropdownOpen((open) => !open);
+
+  return (
+    <>
+      <div className={`nav-bg${dropdownOpen ? " nav-bg--dropdown" : ""}`}></div>
+      <nav className="navbar">
+        <div className="navbar-left">
+          {/* Desktop links */}
+          <div className="navbar-links">
+            <Link to="/">Home</Link>
+            <Link to="/profile">Profile</Link>
+            <Link to="/checkout">Checkout</Link>
+          </div>
+        </div>
+        {/* Hamburger for mobile */}
+        <div className="navbar-dropdown">
+          <button
+            className="navbar-dropdown-toggle"
+            tabIndex={0}
+            onClick={handleDropdownToggle}
+            aria-label="Open navigation menu"
+          >
+            ☰
+          </button>
+          <div className={`navbar-dropdown-menu${dropdownOpen ? " open" : ""}`}>
+            <Link to="/" onClick={() => setDropdownOpen(false)}>
+              Home
+            </Link>
+            <Link to="/profile" onClick={() => setDropdownOpen(false)}>
+              Profile
+            </Link>
+            <Link to="/checkout" onClick={() => setDropdownOpen(false)}>
+              Checkout
+            </Link>
+          </div>
+        </div>
+        <div className="navbar-right">
+          {!user && (
+            <div className="log-reg-btns">
+              <button className="log-btn" onClick={onLoginClick}>
+                Login
+              </button>
+              <span>or</span>
+              <button className="log-btn" onClick={onRegClick}>
+                Register
+              </button>
+            </div>
+          )}
+          {user && (
+            <div className="log-in-cont">
+              <span onClick={() => navigate('/profile')}>{user.name || user.email}</span>
+              <button className="log-btn" onClick={onLogoutClick}>
+                Logout
+              </button>
+            </div>
+          )}
+          <div
+            className="cart-icon-wrapper"
+            onClick={onCartClick}
+            title="View Cart"
+          >
+            <CartIcon className="cart-icon" />
+            <span className="cart-badge">{cartCount}</span>
+          </div>
+        </div>
+      </nav>
+    </>
+  );
+};
 
 export default Navbar;

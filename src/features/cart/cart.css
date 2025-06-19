@@ -1,0 +1,134 @@
+.cart-modal-header {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  align-self: center;
+}
+
+.cart-modal-list {
+  width: 100%;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  list-style: none;
+}
+
+.cart-modal-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.cart-modal-img-col {
+  flex: 0 0 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-modal-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 6px;
+  border: 1px solid #eee;
+  background: #fafbfc;
+}
+
+.cart-modal-details-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cart-modal-title {
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  font-size: 1.05rem;
+  color: #235390;
+}
+
+.cart-modal-price {
+  font-size: 0.98rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.cart-modal-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.cart-modal-qty-btn {
+  border: none;
+  background: #eaf1fb !important;
+  color: #17406d !important;
+  font-size: 1.3rem;
+  font-weight: bold;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.cart-modal-qty-btn:disabled {
+  color: #bbb !important;
+  cursor: not-allowed;
+  background: none;
+}
+
+.cart-modal-qty-btn:hover:not(:disabled),
+.cart-modal-qty-btn:focus-visible:not(:disabled) {
+  background: #eaf1fb !important;
+  color: #17406d !important;
+}
+
+.cart-modal-qty-value {
+  margin: 0 10px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.cart-modal-remove-btn {
+  margin-left: 1rem;
+  background: #e74c3c;
+  color: #fff;
+  padding: 0.3rem 0.8rem;
+  min-width: unset;
+}
+
+.cart-modal-footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.cart-modal-total {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.cart-modal-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.cart-modal-clear-btn {
+  margin-right: 0;
+}
+
+.cart-modal-empty {
+  text-align: center;
+  margin: 2rem 0;
+}
