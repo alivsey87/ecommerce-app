@@ -4,15 +4,10 @@ import userEvent from "@testing-library/user-event";
 import Modal from "../components/Modal/Modal";
 
 describe("Modal Component", () => {
-  const mockOnClose = jest.fn();
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   it("should render with correct visibility when isOpen is true", () => {
+    
     render(
-      <Modal isOpen={true} onClose={mockOnClose}>
+      <Modal isOpen={true} onClose={() => {}}>
         <div>Test Content</div>
       </Modal>
     );
@@ -27,8 +22,9 @@ describe("Modal Component", () => {
   });
 
   it("should render hidden when isOpen is false", () => {
+    
     render(
-      <Modal isOpen={false} onClose={mockOnClose}>
+      <Modal isOpen={false} onClose={() => {}}>
         <div>Test Content</div>
       </Modal>
     );
@@ -43,6 +39,7 @@ describe("Modal Component", () => {
   });
 
   it("should call onClose when close button is clicked", async () => {
+    const mockOnClose = jest.fn();
     const user = userEvent.setup();
 
     render(
