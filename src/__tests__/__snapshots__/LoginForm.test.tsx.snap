@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LoginForm matches snapshot 1`] = `
+<form
+  class="main-login-form"
+>
+  <h3
+    class="form-head"
+  >
+    Login
+  </h3>
+  <input
+    placeholder="Email"
+    type="email"
+    value=""
+  />
+  <input
+    placeholder="Password"
+    type="password"
+    value=""
+  />
+  <button
+    class="btn-main"
+    type="submit"
+  >
+    Login
+  </button>
+</form>
+`;
