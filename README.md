@@ -7,7 +7,9 @@
 1. [Project Setup](#project-setup)
 2. [App Usage](#app-usage)
 3. [Features](#features)
-4. [Project Structure](#project-structure)
+4. [Testing](#testing)
+5. [CI/CD Pipeline](#cicd-pipeline)
+6. [Project Structure](#project-structure)
 
     - [Components](#components)
     - [Pages](#pages)
@@ -69,6 +71,76 @@ npm run dev
 - **Efficient Data Fetching:** Uses Axios and React Query for fetching and caching data.
 - **Global State Management:** Uses Redux Toolkit for cart, product, and user state.
 - **Firebase Integration:** Firestore for data storage and Firebase Auth for user management.
+
+---
+
+### Testing
+
+The application includes comprehensive test coverage using **Jest** and **React Testing Library** to ensure code quality and reliability:
+
+#### Test Types
+
+- **Unit Tests:** Test individual components and functions in isolation.
+- **Integration Tests:** Test component interactions with Redux state and user events.
+- **Snapshot Tests:** Capture component output to prevent unintended UI changes.
+
+#### Test Coverage
+
+- **Components:** Modal, LoginForm, Navbar, and ProductCard components with user interaction testing.
+- **State Management:** Cart functionality testing including adding products and state updates.
+- **User Interactions:** Button clicks, form submissions, and state changes.
+
+#### Running Tests
+
+```sh
+# Run all tests
+npm test
+
+# Run tests with coverage report
+npm test -- --coverage
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+#### Test Files Structure
+
+- `src/__tests__/` - Contains all test files
+- `src/__tests__/__snapshots__/` - Snapshot files for UI consistency
+- Test files follow the naming convention: `ComponentName.test.tsx`
+
+---
+
+### CI/CD Pipeline
+
+The project implements a robust **GitHub Actions** workflow for continuous integration and deployment:
+
+#### Workflow Features
+
+- **Automated Testing:** Runs all Jest tests on every push and pull request.
+- **Code Quality:** Generates test coverage reports to track code quality.
+- **Build Verification:** Ensures the project builds successfully before deployment.
+- **Deployment Protection:** Prevents deployment if tests fail or build errors occur.
+
+#### Deployment Process
+
+1. **Code Push:** Developer pushes code to main branch
+2. **CI Tests:** GitHub Actions runs all tests automatically
+3. **Build Check:** Project build is verified
+4. **Deployment:** If all checks pass, deploys to Vercel automatically
+5. **Failure Handling:** Stops deployment if any step fails
+
+#### GitHub Actions Configuration
+
+- **Triggers:** Automatic on push to main branch and pull requests
+- **Environment:** Ubuntu latest with Node.js 18
+- **Caching:** npm dependencies cached for faster builds
+- **Vercel Integration:** Seamless deployment to production environment
+
+```sh
+# Workflow files location
+.github/workflows/main.yml
+```
 
 ---
 
